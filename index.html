@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours Interactif : Étude Analytique du Produit Scalaire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #4a5568;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            transform: scale(1.05);
+        }
+
+        .section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .canvas-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .canvas-wrapper {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .canvas-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        canvas {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+        .controls {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .value-display {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 5px;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+            font-size: 1.2em;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #6c5ce7;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .animation-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .canvas-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Étude Analytique du Produit Scalaire</h1>
+            <p>Explorez les concepts mathématiques à travers des visualisations interactives</p>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="showSection('vectors')">🔢 Vecteurs & Produit Scalaire</button>
+            <button class="nav-btn" onclick="showSection('angles')">📐 Angles & Trigonométrie</button>
+            <button class="nav-btn" onclick="showSection('lines')">📏 Droites & Distances</button>
+            <button class="nav-btn" onclick="showSection('circles')">⭕ Cercles</button>
+            <button class="nav-btn" onclick="showSection('parametric')">🔄 Représentation Paramétrique</button>
+            <button class="nav-btn" onclick="showSection('intersections')">🎯 Intersections</button>
+        </div>
+
+        <!-- Section 1: Vecteurs et Produit Scalaire -->
+        <div id="vectors" class="section active">
+            <h2>🔢 Vecteurs et Produit Scalaire</h2>
+            
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Visualisation Interactive des Vecteurs</h3>
+                    <canvas id="vectorCanvas" width="500" height="400"></canvas>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Vecteur u - Composante x:</label>
+                            <input type="range" id="ux" min="-5" max="5" value="3" step="0.1">
+                            <span class="value-display" id="uxValue">3.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Vecteur u - Composante y:</label>
+                            <input type="range" id="uy" min="-5" max="5" value="2" step="0.1">
+                            <span class="value-display" id="uyValue">2.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Vecteur v - Composante x:</label>
+                            <input type="range" id="vx" min="-5" max="5" value="1" step="0.1">
+                            <span class="value-display" id="vxValue">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Vecteur v - Composante y:</label>
+                            <input type="range" id="vy" min="-5" max="5" value="4" step="0.1">
+                            <span class="value-display" id="vyValue">4.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Calculs en Temps Réel</h3>
+                    <div class="formula-box">
+                        <strong>Produit Scalaire:</strong><br>
+                        u⃗ · v⃗ = <span id="scalarProduct">11.0</span>
+                    </div>
+                    <div class="info-panel">
+                        <p><strong>Normes:</strong></p>
+                        <p>||u⃗|| = <span id="normU">3.6</span></p>
+                        <p>||v⃗|| = <span id="normV">4.1</span></p>
+                        <p><strong>Angle entre les vecteurs:</strong></p>
+                        <p>θ = <span id="angleDegrees">42.5</span>°</p>
+                        <p><strong>Perpendiculaires?</strong> <span id="perpendicular">Non</span></p>
+                    </div>
+                    <div class="formula-box">
+                        <p><strong>Formule:</strong> u⃗ · v⃗ = ux × vx + uy × vy</p>
+                        <p><strong>Inégalité de Cauchy-Schwarz:</strong><br>|u⃗ · v⃗| ≤ ||u⃗|| × ||v⃗||</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Angles et Trigonométrie -->
+        <div id="angles" class="section">
+            <h2>📐 Angles et Trigonométrie</h2>
+            
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Repérage Polaire d'un Vecteur</h3>
+                    <canvas id="polarCanvas" width="400" height="400"></canvas>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Angle θ (radians):</label>
+                            <input type="range" id="theta" min="0" max="6.28" value="1.57" step="0.1">
+                            <span class="value-display" id="thetaValue">π/2</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Norme du vecteur:</label>
+                            <input type="range" id="magnitude" min="0.5" max="3" value="2" step="0.1">
+                            <span class="value-display" id="magnitudeValue">2.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🧮 Coordonnées Polaires</h3>
+                    <div class="formula-box">
+                        <p><strong>Coordonnées cartésiennes:</strong></p>
+                        <p>x = r × cos(θ) = <span id="polarX">0.0</span></p>
+                        <p>y = r × sin(θ) = <span id="polarY">2.0</span></p>
+                    </div>
+                    <div class="info-panel">
+                        <p><strong>Valeurs trigonométriques:</strong></p>
+                        <p>cos(θ) = <span id="cosValue">0.0</span></p>
+                        <p>sin(θ) = <span id="sinValue">1.0</span></p>
+                        <p>tan(θ) = <span id="tanValue">∞</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Calcul d'Aire de Triangle</h3>
+                    <canvas id="triangleCanvas" width="500" height="400"></canvas>
+                    <div class="controls">
+                        <button class="btn" onclick="randomizeTriangle()">🎲 Triangle Aléatoire</button>
+                        <div class="formula-box">
+                            <p><strong>Aire = ½|det(AB⃗, AC⃗)|</strong></p>
+                            <p>Aire = <span id="triangleArea">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Droites et Distances -->
+        <div id="lines" class="section">
+            <h2>📏 Droites et Distances</h2>
+            
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Droite et Vecteur Normal</h3>
+                    <canvas id="lineCanvas" width="500" height="400"></canvas>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Coefficient a:</label>
+                            <input type="range" id="lineA" min="-5" max="5" value="1" step="0.1">
+                            <span class="value-display" id="lineAValue">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Coefficient b:</label>
+                            <input type="range" id="lineB" min="-5" max="5" value="1" step="0.1">
+                            <span class="value-display" id="lineBValue">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Coefficient c:</label>
+                            <input type="range" id="lineC" min="-10" max="10" value="0" step="0.1">
+                            <span class="value-display" id="lineCValue">0.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📐 Distance Point-Droite</h3>
+                    <div class="formula-box">
+                        <p><strong>Équation:</strong> <span id="lineEquation">x + y = 0</span></p>
+                        <p><strong>Vecteur normal:</strong> n⃗(<span id="normalVector">1, 1</span>)</p>
+                    </div>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Point P - x:</label>
+                            <input type="range" id="pointX" min="-5" max="5" value="2" step="0.1">
+                            <span class="value-display" id="pointXValue">2.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Point P - y:</label>
+                            <input type="range" id="pointY" min="-5" max="5" value="3" step="0.1">
+                            <span class="value-display" id="pointYValue">3.0</span>
+                        </div>
+                    </div>
+                    <div class="info-panel">
+                        <p><strong>Distance:</strong> d = <span id="distanceValue">3.54</span></p>
+                        <p><strong>Formule:</strong> d = |ax₀ + by₀ + c| / √(a² + b²)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Cercles -->
+        <div id="circles" class="section">
+            <h2>⭕ Cercles</h2>
+            
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Cercle Interactif</h3>
+                    <canvas id="circleCanvas" width="500" height="400"></canvas>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Centre - x:</label>
+                            <input type="range" id="centerX" min="-3" max="3" value="0" step="0.1">
+                            <span class="value-display" id="centerXValue">0.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Centre - y:</label>
+                            <input type="range" id="centerY" min="-3" max="3" value="0" step="0.1">
+                            <span class="value-display" id="centerYValue">0.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Rayon:</label>
+                            <input type="range" id="radius" min="0.5" max="4" value="2" step="0.1">
+                            <span class="value-display" id="radiusValue">2.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Équations du Cercle</h3>
+                    <div class="formula-box">
+                        <p><strong>Forme canonique:</strong></p>
+                        <p>(x - <span id="circleH">0</span>)² + (y - <span id="circleK">0</span>)² = <span id="circleR2">4</span></p>
+                    </div>
+                    <div class="formula-box">
+                        <p><strong>Forme développée:</strong></p>
+                        <p><span id="expandedForm">x² + y² = 4</span></p>
+                    </div>
+                    <div class="info-panel">
+                        <p><strong>Centre:</strong> Ω(<span id="circleCenterCoords">0, 0</span>)</p>
+                        <p><strong>Rayon:</strong> R = <span id="circleRadiusDisplay">2.0</span></p>
+                        <p><strong>Aire:</strong> A = πR² = <span id="circleArea">12.57</span></p>
+                        <p><strong>Périmètre:</strong> P = 2πR = <span id="circlePerimeter">12.57</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Intérieur/Extérieur du Cercle</h3>
+                    <canvas id="insideOutsideCanvas" width="500" height="400"></canvas>
+                    <div class="info-panel">
+                        <p>Cliquez sur le canvas pour placer des points!</p>
+                        <p><span style="color: #ff6b6b;">● Rouge:</span> Extérieur du cercle</p>
+                        <p><span style="color: #4ecdc4;">● Cyan:</span> Sur le cercle</p>
+                        <p><span style="color: #45b7d1;">● Bleu:</span> Intérieur du cercle</p>
+                    </div>
+                    <button class="btn" onclick="clearPoints()">🗑️ Effacer les Points</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Représentation Paramétrique -->
+        <div id="parametric" class="section">
+            <h2>🔄 Représentation Paramétrique</h2>
+            
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Animation Paramétrique</h3>
+                    <canvas id="parametricCanvas" width="500" height="400"></canvas>
+                    <div class="animation-controls">
+                        <button class="btn" onclick="toggleAnimation()">▶️ Play/Pause</button>
+                        <button class="btn" onclick="resetAnimation()">⏹️ Reset</button>
+                    </div>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Vitesse d'animation:</label>
+                            <input type="range" id="animSpeed" min="0.01" max="0.2" value="0.05" step="0.01">
+                            <span class="value-display" id="animSpeedValue">0.05</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Équations Paramétriques</h3>
+                    <div class="formula-box">
+                        <p><strong>x(t) = a + R×cos(t)</strong></p>
+                        <p><strong>y(t) = b + R×sin(t)</strong></p>
+                        <p>où t ∈ [0, 2π]</p>
+                    </div>
+                    <div class="info-panel">
+                        <p><strong>Paramètre actuel:</strong> t = <span id="currentT">0.00</span></p>
+                        <p><strong>Position:</strong> (<span id="currentX">0.00</span>, <span id="currentY">0.00</span>)</p>
+                        <p><strong>cos(t) =</strong> <span id="currentCos">1.00</span></p>
+                        <p><strong>sin(t) =</strong> <span id="currentSin">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Intersections -->
+        <div id="intersections" class="section">
+            <h2>🎯 Intersections et Tangentes</h2>
+            
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Intersection Droite-Cercle</h3>
+                    <canvas id="intersectionCanvas" width="500" height="400"></canvas>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Droite - Pente:</label>
+                            <input type="range" id="slope" min="-3" max="3" value="1" step="0.1">
+                            <span class="value-display" id="slopeValue">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Droite - Ordonnée à l'origine:</label>
+                            <input type="range" id="intercept" min="-5" max="5" value="0" step="0.1">
+                            <span class="value-display" id="interceptValue">0.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📈 Analyse de l'Intersection</h3>
+                    <div class="formula-box">
+                        <p><strong>Équation droite:</strong> y = <span id="lineEq">x</span></p>
+                        <p><strong>Distance centre-droite:</strong> d = <span id="centerLineDistance">0.0</span></p>
+                    </div>
+                    <div class="info-panel">
+                        <p><strong>Type d'intersection:</strong></p>
+                        <p id="intersectionType">Deux points d'intersection</p>
+                        <p><strong>Points d'intersection:</strong></p>
+                        <p id="intersectionPoints">A(1.41, 1.41), B(-1.41, -1.41)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <h3>Tangentes au Cercle</h3>
+                    <canvas id="tangentCanvas" width="500" height="400"></canvas>
+                    <div class="info-panel">
+                        <p>Cliquez sur le cercle pour voir les tangentes!</p>
+                        <p><strong>Point de tangence:</strong> <span id="tangentPoint">Cliquez sur le cercle</span></p>
+                        <p><strong>Équation tangente:</strong> <span id="tangentEquation">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentSection = 'vectors';
+        let animationRunning = false;
+        let animationId = null;
+        let t = 0;
+        let clickedPoints = [];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAllCanvases();
+            setupEventListeners();
+            updateVectorCanvas();
+        });
+
+        function showSection(sectionId) {
+            // Masquer toutes les sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Masquer tous les boutons actifs
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Afficher la section sélectionnée
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            currentSection = sectionId;
+            
+            // Redessiner le canvas approprié
+            switch(sectionId) {
+                case 'vectors':
+                    updateVectorCanvas();
+                    break;
+                case 'angles':
+                    updatePolarCanvas();
+                    updateTriangleCanvas();
+                    break;
+                case 'lines':
+                    updateLineCanvas();
+                    break;
+                case 'circles':
+                    updateCircleCanvas();
+                    updateInsideOutsideCanvas();
+                    break;
+                case 'parametric':
+                    updateParametricCanvas();
+                    break;
+                case 'intersections':
+                    updateIntersectionCanvas();
+                    updateTangentCanvas();
+                    break;
+            }
+        }
+
+        function initializeAllCanvases() {
+            // Initialiser tous les canvas
+            const canvases = ['vectorCanvas', 'polarCanvas', 'triangleCanvas', 'lineCanvas', 
+                            'circleCanvas', 'insideOutsideCanvas', 'parametricCanvas', 
+                            'intersectionCanvas', 'tangentCanvas'];
+            
+            canvases.forEach(canvasId => {
+                const canvas = document.getElementById(canvasId);
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#f8fafc';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // Vecteurs
+            ['ux', 'uy', 'vx', 'vy'].forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.addEventListener('input', updateVectorCanvas);
+                }
+            });
+
+            // Angles
+            ['theta', 'magnitude'].forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.addEventListener('input', updatePolarCanvas);
+                }
+            });
+
+            // Droites
+            ['lineA', 'lineB', 'lineC', 'pointX', 'pointY'].forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.addEventListener('input', updateLineCanvas);
+                }
+            });
+
+            // Cercles
+            ['centerX', 'centerY', 'radius'].forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.addEventListener('input', function() {
+                        updateCircleCanvas();
+                        updateInsideOutsideCanvas();
+                    });
+                }
+            });
+
+            // Animation paramétrique
+            const animSpeed = document.getElementById('animSpeed');
+            if (animSpeed) {
+                animSpeed.addEventListener('input', function() {
+                    document.getElementById('animSpeedValue').textContent = this.value;
+                });
+            }
+
+            // Intersections
+            ['slope', 'intercept'].forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    slider.addEventListener('input', updateIntersectionCanvas);
+                }
+            });
+
+            // Canvas click events
+            const insideOutsideCanvas = document.getElementById('insideOutsideCanvas');
+            if (insideOutsideCanvas) {
+                insideOutsideCanvas.addEventListener('click', handleInsideOutsideClick);
+            }
+
+            const tangentCanvas = document.getElementById('tangentCanvas');
+            if (tangentCanvas) {
+                tangentCanvas.addEventListener('click', handleTangentClick);
+            }
+        }
+
+        // Section 1: Vecteurs et Produit Scalaire
+        function updateVectorCanvas() {
+            const canvas = document.getElementById('vectorCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner la grille
+            drawGrid(ctx, width, height);
+            
+            // Obtenir les valeurs des sliders
+            const ux = parseFloat(document.getElementById('ux').value);
+            const uy = parseFloat(document.getElementById('uy').value);
+            const vx = parseFloat(document.getElementById('vx').value);
+            const vy = parseFloat(document.getElementById('vy').value);
+            
+            // Mettre à jour les affichages
+            updateSliderDisplay('ux', ux);
+            updateSliderDisplay('uy', uy);
+            updateSliderDisplay('vx', vx);
+            updateSliderDisplay('vy', vy);
+            
+            // Convertir les coordonnées
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 30;
+            
+            // Dessiner les vecteurs
+            drawVector(ctx, centerX, centerY, ux * scale, -uy * scale, '#ff6b6b', 'u⃗');
+            drawVector(ctx, centerX, centerY, vx * scale, -vy * scale, '#4ecdc4', 'v⃗');
+            
+            // Dessiner la projection
+            const dotProduct = ux * vx + uy * vy;
+            const normV = Math.sqrt(vx * vx + vy * vy);
+            if (normV > 0) {
+                const projLength = dotProduct / normV;
+                const projX = (projLength * vx / normV) * scale;
+                const projY = -(projLength * vy / normV) * scale;
+                
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#95a5a6';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX + ux * scale, centerY - uy * scale);
+                ctx.lineTo(centerX + projX, centerY + projY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+            
+            // Calculer et afficher les résultats
+            const normU = Math.sqrt(ux * ux + uy * vy);
+            const normVCalc = Math.sqrt(vx * vx + vy * vy);
+            const angle = Math.acos(Math.max(-1, Math.min(1, dotProduct / (normU * normVCalc))));
+            const angleDegrees = angle * 180 / Math.PI;
+            
+            document.getElementById('scalarProduct').textContent = dotProduct.toFixed(2);
+            document.getElementById('normU').textContent = normU.toFixed(2);
+            document.getElementById('normV').textContent = normVCalc.toFixed(2);
+            document.getElementById('angleDegrees').textContent = angleDegrees.toFixed(1);
+            document.getElementById('perpendicular').textContent = Math.abs(dotProduct) < 0.01 ? 'Oui' : 'Non';
+        }
+
+        function drawGrid(ctx, width, height) {
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 30;
+            
+            // Lignes de grille
+            for (let i = -10; i <= 10; i++) {
+                if (i !== 0) {
+                    // Lignes verticales
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + i * scale, 0);
+                    ctx.lineTo(centerX + i * scale, height);
+                    ctx.stroke();
+                    
+                    // Lignes horizontales
+                    ctx.beginPath();
+                    ctx.moveTo(0, centerY + i * scale);
+                    ctx.lineTo(width, centerY + i * scale);
+                    ctx.stroke();
+                }
+            }
+            
+            // Axes principaux
+            ctx.strokeStyle = '#2d3748';
+            ctx.lineWidth = 2;
+            
+            // Axe X
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+            
+            // Axe Y
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, height);
+            ctx.stroke();
+            
+            // Flèches
+            drawArrow(ctx, width - 10, centerY, 0);
+            drawArrow(ctx, centerX, 10, Math.PI / 2);
+            
+            // Labels
+            ctx.fillStyle = '#2d3748';
+            ctx.font = '14px Arial';
+            ctx.fillText('x', width - 25, centerY + 20);
+            ctx.fillText('y', centerX + 10, 25);
+        }
+
+        function drawVector(ctx, startX, startY, dx, dy, color, label) {
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 3;
+            
+            // Ligne du vecteur
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(startX + dx, startY + dy);
+            ctx.stroke();
+            
+            // Flèche
+            const angle = Math.atan2(dy, dx);
+            const arrowLength = 10;
+            const arrowAngle = Math.PI / 6;
+            
+            ctx.beginPath();
+            ctx.moveTo(startX + dx, startY + dy);
+            ctx.lineTo(
+                startX + dx - arrowLength * Math.cos(angle - arrowAngle),
+                startY + dy - arrowLength * Math.sin(angle - arrowAngle)
+            );
+            ctx.moveTo(startX + dx, startY + dy);
+            ctx.lineTo(
+                startX + dx - arrowLength * Math.cos(angle + arrowAngle),
+                startY + dy - arrowLength * Math.sin(angle + arrowAngle)
+            );
+            ctx.stroke();
+            
+            // Label
+            ctx.fillStyle = color;
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(label, startX + dx + 10, startY + dy - 10);
+        }
+
+        function drawArrow(ctx, x, y, angle) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-10, -5);
+            ctx.lineTo(-10, 5);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function updateSliderDisplay(id, value) {
+            const display = document.getElementById(id + 'Value');
+            if (display) {
+                display.textContent = value.toFixed(1);
+            }
+        }
+
+        // Section 2: Angles et Trigonométrie
+        function updatePolarCanvas() {
+            const canvas = document.getElementById('polarCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Obtenir les valeurs
+            const theta = parseFloat(document.getElementById('theta').value);
+            const magnitude = parseFloat(document.getElementById('magnitude').value);
+            
+            // Dessiner les cercles de référence
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let r = 50; r <= 150; r += 50) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+            
+            // Dessiner les axes
+            ctx.strokeStyle = '#cbd5e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI) / 4;
+                const x1 = centerX + 20 * Math.cos(angle);
+                const y1 = centerY + 20 * Math.sin(angle);
+                const x2 = centerX + 160 * Math.cos(angle);
+                const y2 = centerY + 160 * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            
+            // Calculer les coordonnées
+            const x = magnitude * Math.cos(theta);
+            const y = magnitude * Math.sin(theta);
+            const scale = 50;
+            
+            // Dessiner le vecteur
+            drawVector(ctx, centerX, centerY, x * scale, -y * scale, '#ff6b6b', 'r⃗');
+            
+            // Dessiner l'arc d'angle
+            ctx.strokeStyle = '#feca57';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 40, 0, -theta, theta < 0);
+            ctx.stroke();
+            
+            // Dessiner les projections
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = '#95a5a6';
+            ctx.lineWidth = 2;
+            
+            // Projection sur x
+            ctx.beginPath();
+            ctx.moveTo(centerX + x * scale, centerY - y * scale);
+            ctx.lineTo(centerX + x * scale, centerY);
+            ctx.stroke();
+            
+            // Projection sur y
+            ctx.beginPath();
+            ctx.moveTo(centerX + x * scale, centerY - y * scale);
+            ctx.lineTo(centerX, centerY - y * scale);
+            ctx.stroke();
+            
+            ctx.setLineDash([]);
+            
+            // Mettre à jour les affichages
+            document.getElementById('thetaValue').textContent = (theta / Math.PI).toFixed(2) + 'π';
+            document.getElementById('magnitudeValue').textContent = magnitude.toFixed(1);
+            document.getElementById('polarX').textContent = x.toFixed(2);
+            document.getElementById('polarY').textContent = y.toFixed(2);
+            document.getElementById('cosValue').textContent = Math.cos(theta).toFixed(3);
+            document.getElementById('sinValue').textContent = Math.sin(theta).toFixed(3);
+            
+            const tanValue = Math.abs(Math.cos(theta)) < 0.001 ? '∞' : (Math.tan(theta)).toFixed(3);
+            document.getElementById('tanValue').textContent = tanValue;
+        }
+
+        function updateTriangleCanvas() {
+            const canvas = document.getElementById('triangleCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Points du triangle (exemple)
+            const A = {x: 100, y: 300};
+            const B = {x: 400, y: 100};
+            const C = {x: 350, y: 350};
+            
+            // Dessiner le triangle
+            ctx.strokeStyle = '#2d3748';
+            ctx.fillStyle = 'rgba(78, 205, 196, 0.3)';
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y);
+            ctx.lineTo(B.x, B.y);
+            ctx.lineTo(C.x, C.y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            // Dessiner les points
+            drawPoint(ctx, A.x, A.y, 'A', '#ff6b6b');
+            drawPoint(ctx, B.x, B.y, 'B', '#4ecdc4');
+            drawPoint(ctx, C.x, C.y, 'C', '#feca57');
+            
+            // Calculer l'aire
+            const area = Math.abs((B.x - A.x) * (C.y - A.y) - (C.x - A.x) * (B.y - A.y)) / 2;
+            document.getElementById('triangleArea').textContent = area.toFixed(1);
+        }
+
+        function drawPoint(ctx, x, y, label, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, 6, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(label, x + 10, y - 10);
+        }
+
+        function randomizeTriangle() {
+            updateTriangleCanvas();
+        }
+
+        // Section 3: Droites et Distances
+        function updateLineCanvas() {
+            const canvas = document.getElementById('lineCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner la grille
+            drawGrid(ctx, width, height);
+            
+            // Obtenir les valeurs
+            const a = parseFloat(document.getElementById('lineA').value);
+            const b = parseFloat(document.getElementById('lineB').value);
+            const c = parseFloat(document.getElementById('lineC').value);
+            const px = parseFloat(document.getElementById('pointX').value);
+            const py = parseFloat(document.getElementById('pointY').value);
+            
+            // Mettre à jour les affichages
+            updateSliderDisplay('lineA', a);
+            updateSliderDisplay('lineB', b);
+            updateSliderDisplay('lineC', c);
+            updateSliderDisplay('pointX', px);
+            updateSliderDisplay('pointY', py);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 30;
+            
+            // Dessiner la droite ax + by + c = 0
+            if (Math.abs(b) > 0.001) {
+                // Droite non verticale
+                const x1 = -width / (2 * scale);
+                const y1 = -(a * x1 + c) / b;
+                const x2 = width / (2 * scale);
+                const y2 = -(a * x2 + c) / b;
+                
+                ctx.strokeStyle = '#4ecdc4';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(centerX + x1 * scale, centerY - y1 * scale);
+                ctx.lineTo(centerX + x2 * scale, centerY - y2 * scale);
+                ctx.stroke();
+            } else if (Math.abs(a) > 0.001) {
+                // Droite verticale
+                const x = -c / a;
+                ctx.strokeStyle = '#4ecdc4';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(centerX + x * scale, 0);
+                ctx.lineTo(centerX + x * scale, height);
+                ctx.stroke();
+            }
+            
+            // Dessiner le vecteur normal
+            if (Math.abs(a) > 0.001 || Math.abs(b) > 0.001) {
+                const norm = Math.sqrt(a * a + b * b);
+                const nx = a / norm;
+                const ny = b / norm;
+                
+                drawVector(ctx, centerX, centerY, nx * scale, -ny * scale, '#ff6b6b', 'n⃗');
+            }
+            
+            // Dessiner le point
+            drawPoint(ctx, centerX + px * scale, centerY - py * scale, 'P', '#feca57');
+            
+            // Calculer et dessiner la distance
+            const distance = Math.abs(a * px + b * py + c) / Math.sqrt(a * a + b * b);
+            
+            // Trouver le pied de la perpendiculaire
+            const norm2 = a * a + b * b;
+            if (norm2 > 0) {
+                const t = -(a * px + b * py + c) / norm2;
+                const footX = px + t * a;
+                const footY = py + t * b;
+                
+                // Dessiner la perpendiculaire
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#e17055';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX + px * scale, centerY - py * scale);
+                ctx.lineTo(centerX + footX * scale, centerY - footY * scale);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                drawPoint(ctx, centerX + footX * scale, centerY - footY * scale, 'H', '#e17055');
+            }
+            
+            // Mettre à jour les affichages
+            let equation = '';
+            if (Math.abs(a) > 0.001) equation += a.toFixed(1) + 'x';
+            if (Math.abs(b) > 0.001) {
+                if (equation && b > 0) equation += ' + ';
+                else if (b < 0) equation += ' - ';
+                equation += Math.abs(b).toFixed(1) + 'y';
+            }
+            if (Math.abs(c) > 0.001) {
+                if (equation && c > 0) equation += ' + ';
+                else if (c < 0) equation += ' - ';
+                equation += Math.abs(c).toFixed(1);
+            }
+            equation += ' = 0';
+            
+            document.getElementById('lineEquation').textContent = equation;
+            document.getElementById('normalVector').textContent = a.toFixed(1) + ', ' + b.toFixed(1);
+            document.getElementById('distanceValue').textContent = distance.toFixed(2);
+        }
+
+        // Section 4: Cercles
+        function updateCircleCanvas() {
+            const canvas = document.getElementById('circleCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner la grille
+            drawGrid(ctx, width, height);
+            
+            // Obtenir les valeurs
+            const centerX_val = parseFloat(document.getElementById('centerX').value);
+            const centerY_val = parseFloat(document.getElementById('centerY').value);
+            const radius_val = parseFloat(document.getElementById('radius').value);
+            
+            // Mettre à jour les affichages
+            updateSliderDisplay('centerX', centerX_val);
+            updateSliderDisplay('centerY', centerY_val);
+            updateSliderDisplay('radius', radius_val);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 30;
+            
+            // Dessiner le cercle
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.fillStyle = 'rgba(78, 205, 196, 0.1)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(
+                centerX + centerX_val * scale,
+                centerY - centerY_val * scale,
+                radius_val * scale,
+                0,
+                2 * Math.PI
+            );
+            ctx.fill();
+            ctx.stroke();
+            
+            // Dessiner le centre
+            drawPoint(ctx, centerX + centerX_val * scale, centerY - centerY_val * scale, 'Ω', '#ff6b6b');
+            
+            // Dessiner le rayon
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(centerX + centerX_val * scale, centerY - centerY_val * scale);
+            ctx.lineTo(centerX + (centerX_val + radius_val) * scale, centerY - centerY_val * scale);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Mettre à jour les informations
+            document.getElementById('circleH').textContent = centerX_val.toFixed(1);
+            document.getElementById('circleK').textContent = centerY_val.toFixed(1);
+            document.getElementById('circleR2').textContent = (radius_val * radius_val).toFixed(1);
+            document.getElementById('circleCenterCoords').textContent = centerX_val.toFixed(1) + ', ' + centerY_val.toFixed(1);
+            document.getElementById('circleRadiusDisplay').textContent = radius_val.toFixed(1);
+            document.getElementById('circleArea').textContent = (Math.PI * radius_val * radius_val).toFixed(2);
+            document.getElementById('circlePerimeter').textContent = (2 * Math.PI * radius_val).toFixed(2);
+            
+            // Forme développée
+            const a = -2 * centerX_val;
+            const b = -2 * centerY_val;
+            const c = centerX_val * centerX_val + centerY_val * centerY_val - radius_val * radius_val;
+            
+            let expanded = 'x² + y²';
+            if (Math.abs(a) > 0.001) {
+                expanded += (a > 0 ? ' + ' : ' - ') + Math.abs(a).toFixed(1) + 'x';
+            }
+            if (Math.abs(b) > 0.001) {
+                expanded += (b > 0 ? ' + ' : ' - ') + Math.abs(b).toFixed(1) + 'y';
+            }
+            if (Math.abs(c) > 0.001) {
+                expanded += (c > 0 ? ' + ' : ' - ') + Math.abs(c).toFixed(1);
+            }
+            expanded += ' = 0';
+            
+            document.getElementById('expandedForm').textContent = expanded;
+        }
+
+        function updateInsideOutsideCanvas() {
+            const canvas = document.getElementById('insideOutsideCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner la grille
+            drawGrid(ctx, width, height);
+            
+            // Obtenir les valeurs du cercle
+            const centerX_val = parseFloat(document.getElementById('centerX').value);
+            const centerY_val = parseFloat(document.getElementById('centerY').value);
+            const radius_val = parseFloat(document.getElementById('radius').value);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 30;
+            
+            // Dessiner le cercle
+            ctx.strokeStyle = '#2d3748';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(
+                centerX + centerX_val * scale,
+                centerY - centerY_val * scale,
+                radius_val * scale,
+                0,
+                2 * Math.PI
+            );
+            ctx.stroke();
+            
+            // Dessiner les points cliqués
+            clickedPoints.forEach(point => {
+                const dist = Math.sqrt(
+                    Math.pow(point.x - centerX_val, 2) + Math.pow(point.y - centerY_val, 2)
+                );
+                
+                let color;
+                if (Math.abs(dist - radius_val) < 0.1) {
+                    color = '#4ecdc4'; // Sur le cercle
+                } else if (dist < radius_val) {
+                    color = '#45b7d1'; // Intérieur
+                } else {
+                    color = '#ff6b6b'; // Extérieur
+                }
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(
+                    centerX + point.x * scale,
+                    centerY - point.y * scale,
+                    5,
+                    0,
+                    2 * Math.PI
+                );
+                ctx.fill();
+            });
+        }
+
+        function handleInsideOutsideClick(event) {
+            const canvas = event.target;
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 30;
+            
+            // Convertir en coordonnées mathématiques
+            const mathX = (x - centerX) / scale;
+            const mathY = -(y - centerY) / scale;
+            
+            clickedPoints.push({x: mathX, y: mathY});
+            updateInsideOutsideCanvas();
+        }
+
+        function clearPoints() {
+            clickedPoints = [];
+            updateInsideOutsideCanvas();
+        }
+
+        // Section 5: Représentation Paramétrique
+        function updateParametricCanvas() {
+            const canvas = document.getElementById('parametricCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner la grille
+            drawGrid(ctx, width, height);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 50;
+            const a = 1; // Centre du cercle
+            const b = 0;
+            const R = 2; // Rayon
+            
+            // Dessiner le cercle complet
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX + a * scale, centerY - b * scale, R * scale, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Dessiner la partie tracée jusqu'à t
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(centerX + a * scale, centerY - b * scale, R * scale, 0, -t, true);
+            ctx.stroke();
+            
+            // Position actuelle
+            const x = a + R * Math.cos(t);
+            const y = b + R * Math.sin(t);
+            
+            // Dessiner le point mobile
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.arc(centerX + x * scale, centerY - y * scale, 8, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Dessiner les lignes de construction
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = '#95a5a6';
+            ctx.lineWidth = 2;
+            
+            // Ligne vers le centre
+            ctx.beginPath();
+            ctx.moveTo(centerX + a * scale, centerY - b * scale);
+            ctx.lineTo(centerX + x * scale, centerY - y * scale);
+            ctx.stroke();
+            
+            // Projections
+            ctx.beginPath();
+            ctx.moveTo(centerX + x * scale, centerY - y * scale);
+            ctx.lineTo(centerX + x * scale, centerY - b * scale);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX + x * scale, centerY - y * scale);
+            ctx.lineTo(centerX + a * scale, centerY - y * scale);
+            ctx.stroke();
+            
+            ctx.setLineDash([]);
+            
+            // Dessiner l'angle
+            ctx.strokeStyle = '#feca57';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(centerX + a * scale, centerY - b * scale, 30, 0, -t, true);
+            ctx.stroke();
+            
+            // Mettre à jour les affichages
+            document.getElementById('currentT').textContent = t.toFixed(2);
+            document.getElementById('currentX').textContent = x.toFixed(2);
+            document.getElementById('currentY').textContent = y.toFixed(2);
+            document.getElementById('currentCos').textContent = Math.cos(t).toFixed(2);
+            document.getElementById('currentSin').textContent = Math.sin(t).toFixed(2);
+        }
+
+        function toggleAnimation() {
+            if (animationRunning) {
+                stopAnimation();
+            } else {
+                startAnimation();
+            }
+        }
+
+        function startAnimation() {
+            animationRunning = true;
+            animate();
+        }
+
+        function stopAnimation() {
+            animationRunning = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function resetAnimation() {
+            stopAnimation();
+            t = 0;
+            updateParametricCanvas();
+        }
+
+        function animate() {
+            if (!animationRunning) return;
+            
+            const speed = parseFloat(document.getElementById('animSpeed').value);
+            t += speed;
+            
+            if (t > 2 * Math.PI) {
+                t = 0;
+            }
+            
+            updateParametricCanvas();
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Section 6: Intersections
+        function updateIntersectionCanvas() {
+            const canvas = document.getElementById('intersectionCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner la grille
+            drawGrid(ctx, width, height);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 50;
+            
+            // Cercle fixe (centre origine, rayon 2)
+            const circleR = 2;
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, circleR * scale, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Obtenir les paramètres de la droite
+            const slope = parseFloat(document.getElementById('slope').value);
+            const intercept = parseFloat(document.getElementById('intercept').value);
+            
+            updateSliderDisplay('slope', slope);
+            updateSliderDisplay('intercept', intercept);
+            
+            // Dessiner la droite y = mx + b
+            const x1 = -width / (2 * scale);
+            const y1 = slope * x1 + intercept;
+            const x2 = width / (2 * scale);
+            const y2 = slope * x2 + intercept;
+            
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX + x1 * scale, centerY - y1 * scale);
+            ctx.lineTo(centerX + x2 * scale, centerY - y2 * scale);
+            ctx.stroke();
+            
+            // Calculer la distance du centre à la droite
+            // Droite: mx - y + b = 0
+            const a = slope;
+            const b = -1;
+            const c = intercept;
+            const distance = Math.abs(c) / Math.sqrt(a * a + b * b);
+            
+            // Calculer les intersections
+            const discriminant = circleR * circleR - distance * distance;
+            
+            let intersectionText = '';
+            let pointsText = '';
+            
+            if (discriminant < -0.01) {
+                intersectionText = 'Aucune intersection';
+                pointsText = 'Pas de points';
+            } else if (Math.abs(discriminant) < 0.01) {
+                intersectionText = 'Tangente (1 point)';
+                // Point de tangence
+                const h = -slope * intercept / (slope * slope + 1);
+                const k = intercept / (slope * slope + 1);
+                pointsText = `T(${h.toFixed(2)}, ${k.toFixed(2)})`;
+                
+                // Dessiner le point de tangence
+                ctx.fillStyle = '#feca57';
+                ctx.beginPath();
+                ctx.arc(centerX + h * scale, centerY - k * scale, 6, 0, 2 * Math.PI);
+                ctx.fill();
+            } else {
+                intersectionText = 'Deux points d\'intersection';
+                
+                // Résoudre x² + (mx + b)² = r²
+                const A = 1 + slope * slope;
+                const B = 2 * slope * intercept;
+                const C = intercept * intercept - circleR * circleR;
+                
+                const delta = B * B - 4 * A * C;
+                const x1_int = (-B + Math.sqrt(delta)) / (2 * A);
+                const x2_int = (-B - Math.sqrt(delta)) / (2 * A);
+                const y1_int = slope * x1_int + intercept;
+                const y2_int = slope * x2_int + intercept;
+                
+                pointsText = `A(${x1_int.toFixed(2)}, ${y1_int.toFixed(2)}), B(${x2_int.toFixed(2)}, ${y2_int.toFixed(2)})`;
+                
+                // Dessiner les points d'intersection
+                ctx.fillStyle = '#feca57';
+                ctx.beginPath();
+                ctx.arc(centerX + x1_int * scale, centerY - y1_int * scale, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(centerX + x2_int * scale, centerY - y2_int * scale, 6, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            
+            // Mettre à jour les affichages
+            const lineEq = slope === 1 ? 'y = x' : slope === -1 ? 'y = -x' : `y = ${slope.toFixed(1)}x`;
+            const interceptPart = intercept === 0 ? '' : intercept > 0 ? ` + ${intercept.toFixed(1)}` : ` - ${Math.abs(intercept).toFixed(1)}`;
+            
+            document.getElementById('lineEq').textContent = lineEq + interceptPart;
+            document.getElementById('centerLineDistance').textContent = distance.toFixed(2);
+            document.getElementById('intersectionType').textContent = intersectionText;
+            document.getElementById('intersectionPoints').textContent = pointsText;
+        }
+
+        function updateTangentCanvas() {
+            const canvas = document.getElementById('tangentCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Effacer le canvas
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner la grille
+            drawGrid(ctx, width, height);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = 50;
+            
+            // Cercle fixe
+            const circleR = 2;
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, circleR * scale, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        function handleTangentClick(event) {
+            const canvas = event.target;
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 50;
+            const circleR = 2;
+            
+            // Convertir en coordonnées mathématiques
+            const mathX = (x - centerX) / scale;
+            const mathY = -(y - centerY) / scale;
+            
+            // Vérifier si on clique près du cercle
+            const distFromCenter = Math.sqrt(mathX * mathX + mathY * mathY);
+            
+            if (Math.abs(distFromCenter - circleR) < 0.3) {
+                // Projeter sur le cercle
+                const pointX = circleR * mathX / distFromCenter;
+                const pointY = circleR * mathY / distFromCenter;
+                
+                // Redessiner le canvas
+                updateTangentCanvas();
+                
+                const ctx = canvas.getContext('2d');
+                
+                // Dessiner le point de tangence
+                ctx.fillStyle = '#ff6b6b';
+                ctx.beginPath();
+                ctx.arc(centerX + pointX * scale, centerY - pointY * scale, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Dessiner la tangente
+                // La tangente est perpendiculaire au rayon
+                const normalX = pointX;
+                const normalY = pointY;
+                
+                // Direction de la tangente
+                const tangentX = -normalY;
+                const tangentY = normalX;
+                
+                // Dessiner la tangente
+                ctx.strokeStyle = '#feca57';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                const t1 = centerX + (pointX - 3 * tangentX) * scale;
+                const t2 = centerY - (pointY - 3 * tangentY) * scale;
+                const t3 = centerX + (pointX + 3 * tangentX) * scale;
+                const t4 = centerY - (pointY + 3 * tangentY) * scale;
+                ctx.moveTo(t1, t2);
+                ctx.lineTo(t3, t4);
+                ctx.stroke();
+                
+                // Mettre à jour les affichages
+                document.getElementById('tangentPoint').textContent = `(${pointX.toFixed(2)}, ${pointY.toFixed(2)})`;
+                
+                // Équation de la tangente: (x-a)(x₀-a) + (y-b)(y₀-b) = R²
+                // Ici a=0, b=0, donc: x₀x + y₀y = R²
+                const tangentEq = `${pointX.toFixed(2)}x + ${pointY.toFixed(2)}y = ${(circleR * circleR).toFixed(0)}`;
+                document.getElementById('tangentEquation').textContent = tangentEq;
+            }
+        }
+    </script>
+</body>
+</html>
